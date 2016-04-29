@@ -389,9 +389,9 @@ function generateViewURL($action, $param = null)
 
 function getFlashMessage()
 {
-    $flash = new \stdClass();
-    $flash->message = isset($_SESSION['flash']) && $_SESSION['flash'] != '' ? $_SESSION['flash'] : '';
-    $flash->class = isset($_SESSION['flash_class']) && $_SESSION['flash_class'] != '' ? $_SESSION['flash_class'] : '';
+
+    $flash['message'] = isset($_SESSION['flash']) && $_SESSION['flash'] != '' ? $_SESSION['flash'] : '';
+    $flash['class'] = isset($_SESSION['flash_class']) && $_SESSION['flash_class'] != '' ? $_SESSION['flash_class'] : '';
     $_SESSION['flash'] = '';
     $_SESSION['flash_class'] = '';
     return $flash;
