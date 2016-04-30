@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Gather data to display a category with their posts
+ * @param $param
+ * @param int $page
+ * @throws Exception
+ */
 function category($param, $page = 1){
     $cat = getCategory($param);
     if($cat['name'] == '')
@@ -18,8 +24,17 @@ function category($param, $page = 1){
     generate("Category", $cat['name'], array('category' => $cat, 'postList' => $postList, 'posts' => $posts));
 }
 
+/**
+ * Alias for category(1)
+ */
 function index(){category(1);}
 
+/**
+ * Manage all admin only function. A kind of router for admin's page
+ * @param $name
+ * @param array $params
+ * @throws Exception
+ */
 function adminFunction($name, $params = array()){
 
     if(!isAdmin()){
@@ -42,8 +57,7 @@ function adminFunction($name, $params = array()){
 
         case 'managePost' :
             $categories = getCategories();
-            $posts = getPosts();
-            generate('PostAdmin', 'Administration - Gestion des posts', array('posts' => $posts, 'categories' => $categories, 'admin' => true), true);
+            generate('PostAdmin', 'Administration - Gestion des posts', array('categories' => $categories));
             break;
 
         case 'manageUser' :
@@ -76,6 +90,12 @@ function adminFunction($name, $params = array()){
     }
 }
 
+/**
+ * Gather all data to display a post and all their comments
+ * @param $param
+ * @param int $page
+ * @throws Exception
+ */
 function post($param, $page = 1){
     $post = getPost($param);
     if($post['name'] == '')
@@ -88,12 +108,25 @@ function post($param, $page = 1){
     generate('post', $post['name'], array('post' => $post, 'comments' => $comments));
 }
 
+/**
+ * Call addComment and redirect to the post page
+ * @param $userId
+ * @param $content
+ * @param $postId
+ * @throws Exception
+ */
 function comment($userId, $content, $postId){
     addComment($userId, $content, $postId);
     post($postId);
 }
 
 
+/**
+ * Route login request
+ * @param null $userName
+ * @param null $userPassword
+ * @throws Exception
+ */
 function loginPage($userName = null, $userPassword = null){
 
     if(is_null($userName)){
@@ -106,6 +139,13 @@ function loginPage($userName = null, $userPassword = null){
     }
 }
 
+/**
+ * Route register request
+ * @param null $userName
+ * @param null $userPassword
+ * @param null $userPasswordConfirmation
+ * @throws Exception
+ */
 function registerPage($userName = null, $userPassword = null, $userPasswordConfirmation = null){
     if(is_null($userName)){
         generate("Register", 'Inscription');
@@ -120,6 +160,9 @@ function registerPage($userName = null, $userPassword = null, $userPasswordConfi
     }
 }
 
+/**
+ * Route logout request
+ */
 function logoutPage(){
     logout();
     $_SESSION['flash_class'] = 'success';
@@ -127,6 +170,10 @@ function logoutPage(){
     index();
 }
 
+/**
+ * Return true if the user is logged and admin.
+ * @return bool
+ */
 function isAdmin(){
     return (isset($_SESSION['user_right']) && $_SESSION['user_right'] == 50) ? true : false;
 }

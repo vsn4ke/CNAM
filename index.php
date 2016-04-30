@@ -106,6 +106,15 @@ try{
     }
 }
 
+/**
+ * return the value of an array index. Used to get global variable field and check their existence.
+ * ex: getParams($_Post, 'id') return the id field of $_Post
+ *
+ * @param $tab
+ * @param $name
+ * @return mixed
+ * @throws Exception
+ */
 function getParams($tab, $name){
     if(isset($tab[$name]))
         return $tab[$name];

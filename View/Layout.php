@@ -52,7 +52,7 @@
                 <?php endif; ?>
             </nav>
             <hr class="clear">
-            <?php if($admin):?>
+            <?php if(isAdmin()):?>
                 <nav>
                     <ul>
                         <li>Gestion des posts</li>
