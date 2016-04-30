@@ -15,7 +15,7 @@ function category($param, $page = 1){
             $posts[$i]['categories'] = getCategories($postList['data'][$i]['id']);
         }
     }
-    generate("Category", array('category' => $cat, 'postList' => $postList, 'posts' => $posts));
+    generate("Category", $cat['name'], array('category' => $cat, 'postList' => $postList, 'posts' => $posts));
 }
 
 function index(){category(1);}
@@ -30,20 +30,20 @@ function adminFunction($name, $params = array()){
             deleteComment($params[0]);
             $_SESSION['flash_class'] = 'success';
             $_SESSION['flash'] = 'Commentaire supprimé avec succés.';
-            getPost($params[1]);
+            post($params[1]);
             break;
 
         case 'editComment' :
             editComment($params[0], $params[2], $_SESSION['id']);
             $_SESSION['flash_class'] = 'success';
             $_SESSION['flash'] = "Commentaire éditer avec succés";
-            getPost($params[1]);
+            post($params[1]);
             break;
 
         case 'managePost' :
             $categories = getCategories();
             $posts = getPosts();
-            generate('PostAdmin', array('posts' => $posts, 'categories' => $categories, 'admin' => true), true);
+            generate('PostAdmin', 'Administration - Gestion des posts', array('posts' => $posts, 'categories' => $categories, 'admin' => true), true);
             break;
 
         case 'manageUser' :
@@ -85,19 +85,19 @@ function post($param, $page = 1){
     
     $_SESSION['current'] = generateURL('post', $post['slug']);
     $comments = getComments($post['id'], $page);
-    generate('post', array('post' => $post, 'comments' => $comments));
+    generate('post', $post['name'], array('post' => $post, 'comments' => $comments));
 }
 
 function comment($userId, $content, $postId){
     addComment($userId, $content, $postId);
-    getPost($postId);
+    post($postId);
 }
 
 
 function loginPage($userName = null, $userPassword = null){
 
     if(is_null($userName)){
-        generate('login');
+        generate('login', 'Enregistrement');
     }else{
         login($userName, $userPassword);
         $_SESSION['flash_class'] = 'success';
@@ -108,7 +108,7 @@ function loginPage($userName = null, $userPassword = null){
 
 function registerPage($userName = null, $userPassword = null, $userPasswordConfirmation = null){
     if(is_null($userName)){
-        generate("Register");
+        generate("Register", 'Inscription');
     }else{
         if($userPassword == $userPasswordConfirmation){
             register($userName, $userPassword);

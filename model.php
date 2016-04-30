@@ -25,7 +25,7 @@ function getCategories($id = null)
     return $res->fetchAll();
 }
 
-function getCategory($param)
+function getCategory($category)
 {
     $sql = 'SELECT
                 ca.Cat_Name AS name,
@@ -34,7 +34,7 @@ function getCategory($param)
             WHERE
                 ca.Cat_ID = ? OR ca.Cat_Slug = ?';
 
-    return executeRequest($sql, array($param, $param))->fetch();
+    return executeRequest($sql, array($category, $category))->fetch();
 }
 
 function getCategoriesCount()
@@ -47,12 +47,11 @@ function deleteCategory($id)
 {
     backupTables(array('tCategory', 'linkCatPost'));
 
-    $sql1 = 'DELETE FROM tCategory WHERE Cat_ID = ?';
-    $sql2 = 'DELETE FROM linkCatPost WHERE Cat_ID = ?';
+    $sql = 'DELETE FROM tCategory WHERE Cat_ID = ?;
+            DELETE FROM linkCatPost WHERE Cat_ID = ?';
 
     try{
-        executeRequest($sql1, array($id));
-        executeRequest($sql2, array($id));
+        executeRequest($sql, array($id, $id));
         return true;
     }catch (Exception $e){
         return false;
@@ -118,8 +117,8 @@ function deleteComment($id)
 
 function editComment($id, $content, $userID)
 {
-    $sql = 'UPDATE tComment SET Com_Content = ?, Com_Edit_User_ID = ?, Com_Edit_Date = NOW() WHERE Com_ID = ?';
-    executeRequest($sql, array($content, $id, $userID));
+    $sql = 'UPDATE tComment SET Com_Content = ?, User_ID_Edit = ?, Com_Date_Edit = NOW() WHERE Com_ID = ?';
+    executeRequest($sql, array($content, $userID, $id));
 }
 
 function executeRequest($sql, $params = null)
@@ -132,7 +131,7 @@ function executeRequest($sql, $params = null)
         foreach($params as $key => $param){
 
             if(is_int($param))
-                $result->bindValue($key+1,$param, \PDO::PARAM_INT);
+                $result->bindValue($key+1,$param, PDO::PARAM_INT);
             else
                 $result->bindValue($key+1,$param);
 
@@ -142,16 +141,11 @@ function executeRequest($sql, $params = null)
     return $result;
 }
 
-function transaction($sql = array(), $params = null)
-{
-
-}
-
 function getDb()
 {
     global $db;
     if($db == null){
-        $db = new \PDO('mysql:host=localhost;dbname=project_CNAM;charset=utf8', 'root', '', array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
+        $db = new PDO('mysql:host=localhost;dbname=project_CNAM;charset=utf8', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
     }
     return $db;
 }
@@ -288,7 +282,7 @@ function register($userName, $userPassword)
         $id = getDb()->lastInsertId();
         // si tout ce passe bien on peut log l'utilisateur
         setSession($userName, $right, $id);
-    }catch (\PDOException $e){
+    }catch (PDOException $e){
         throw new Exception("Utilisateur déjà enregistré.");
     }
 }
@@ -297,7 +291,7 @@ function login($userName, $userPassword)
 {
     $sql = 'SELECT User_Hash AS hash, User_ID AS id, User_Right AS uRight FROM tUser WHERE User_Name = ?';
     $result = executeRequest($sql, array($userName));
-    $user = $result->fetch(\PDO::FETCH_ASSOC);
+    $user = $result->fetch(PDO::FETCH_ASSOC);
 
     if($result->rowCount() >0){
         if(password_verify($userPassword, $user['hash'])){
@@ -327,8 +321,9 @@ function setSession($userName, $right, $id){
 }
 
 
-function generate($action, $data = array(), $admin = false)
+function generate($action, $title = '', $data = array(), $admin = false)
 {
+    $script = array();
     $file = 'View/' . $action . 'View.php';
     $content = generateFile($file, $data);
     $flash = getFlashMessage();
@@ -337,12 +332,13 @@ function generate($action, $data = array(), $admin = false)
     $view = generateFile(
         'View/Layout.php',
         array(
-            'title' => '', // todo : Add title
+            'title' => $title,
             'content' => $content,
             'flash' => $flash,
             'catList' => $catList,
             'popularPostList' => $popularPostList,
-            'admin' => $admin
+            'admin' => $admin,
+            'script' => $script
         )
     );
 
@@ -416,6 +412,7 @@ function truncate($content, $length = 200)
 function backupTables($tables = array())
 {
     if($tables[0] == null || $tables[0] == '*'){
+        $tables = null;
         $t = executeRequest('SHOW TABLES')->fetchAll();
         for($i = 0; $i < count($t); $i++){
             $tables[] = $t[$i][0];
@@ -447,7 +444,7 @@ function backupTables($tables = array())
         $return .= "\n\n\n";
     }
 
-    $handle = fopen('db-backup-'.time().'-'.(md5(implode(',', $tables).time())).'.sql', 'w+');
+    $handle = fopen('SQL/db-backup-'.time().'-'.(md5(implode(',', $tables).time())).'.sql', 'w+');
     fwrite($handle, $return);
     fclose($handle);
 }

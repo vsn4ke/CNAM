@@ -12,7 +12,6 @@
     <meta name="viewport" content="width=device-width">
     <link rel="shortcut icon" type="image/x-icon" href="<?= generateURL('View/img/favicon.ico') ?>">
     <link rel="shortcut icon" type="image/png" href="<?= generateURL('View/img/favicon.png') ?>">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="<?= generateURL('View/Style/default.css') ?>" />
 </head>
 <body>
@@ -22,8 +21,8 @@
     </header>
     <div class="blog-page main grid-wrap">
         <header class="grid col-full">
-            <p id="flash" class="<?= $flash['class'] == '' ? 'hidden' : $flash->class?>">
-                <?= $flash->message ?>
+            <p id="flash" class="<?= $flash['class'] == '' ? 'hidden' : $flash['class']?>">
+                <?= $flash['message'] ?>
             </p>
             <hr>
             <nav class="fleft">
