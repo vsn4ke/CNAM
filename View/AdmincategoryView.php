@@ -1,4 +1,4 @@
-<h3>Catégorie : </h3>
+<h3>Catégorie(s) : </h3>
 <ul>
     <?php foreach($categories as $category):?>
         <li id="delete-<?= $category['id']?>"><span id="name-<?= $category['id']?>"><?= $category['name']?></span>
@@ -151,7 +151,3 @@
         }
     });
 </script>
-<form action="<?= generateURL('admin', 'backup')?>" method="post">
-    <button type="submit">Backup Database</button>
-</form>
-

@@ -385,6 +385,26 @@ function getPost($param)
     return executeRequest($sql, array($param, $param))->fetch();
 }
 
+function getPosts()
+{
+    $sql = 'SELECT
+                p.Post_Name AS name,
+                p.Post_Content AS content,
+                p.Post_Date AS date,
+                p.Post_ID as id,
+                p.Post_Slug AS slug,
+                u.User_Name AS username,
+                count(co.Com_ID) AS Com_Number
+            FROM tPost AS p
+            JOIN tUser AS u
+                ON p.User_ID = u.User_ID
+            LEFT JOIN tComment AS co
+                ON co.Post_ID = p.Post_ID
+            GROUP BY p.Post_ID';
+
+    return executeRequest($sql)->fetchAll();
+}
+
 /**
  * Return up to 5 posts data order by comment numbers
  * @return PDOStatement
@@ -402,6 +422,77 @@ function popularPostList()
             ORDER BY Com_Number DESC LIMIT 0, 5';
 
     return executeRequest($sql);
+}
+
+/**
+ * @param $name
+ * @param $content
+ * @param $userID
+ * @param $categories
+ * @return bool
+ */
+function addPost($name, $content, $userID, $categories){
+
+
+    try{
+        $sql = 'INSERT INTO tPost
+                VALUES("", ?, ?, NOW(), ?, ?, "", "");';  // id, name, content, date, slug, user_ID, User_ID_Edit, Post_Date_Edit
+
+        executeRequest($sql,array($name, $content, slugify($name), $userID));
+        $id = getDb()->lastInsertId();
+        $sql = '';
+
+        $params = array();
+        foreach($categories as $category){
+            $sql .= 'INSERT INTO linkCatPost VALUES(?, ?);';
+            $params[] = intval($category);
+            $params[] = $id;
+        }
+
+        executeRequest($sql, $params);
+        return true;
+    }catch (Exception $e){
+        return false;
+    }
+}
+
+/**
+ * @param $id
+ * @return bool
+ */
+function deletePost($id){
+    backupTables(array('tPost', 'linkCatPost', 'tComment'));
+
+    $sql = 'DELETE FROM tPost WHERE Post_ID = ?;
+            DELETE FROM linkCatPost WHERE Post_ID = ?;
+            DELETE FROM tComment WHERE Post_ID = ?';
+
+    try{
+        executeRequest($sql, array($id, $id, $id));
+        return true;
+    }catch (Exception $e){
+        return false;
+    }
+}
+
+/**
+ * @param $id
+ * @param $name
+ * @param $content
+ * @param $userID
+ * @return bool
+ */
+function editPost($id, $name, $content, $userID){
+    $sql = 'UPDATE tPost
+            SET  Post_Name = ?, Post_Content = ?, Post_Slug = ?, User_ID_Edit = ?, Post_Date_Edit = NOW()
+            WHERE Post_ID = ?';
+
+    try{
+        executeRequest($sql, array($name, $content, slugify($name), $userID,  $id));
+        return true;
+    }catch (Exception $e){
+        return false;
+    }
 }
 
 /*
@@ -424,7 +515,7 @@ function register($userName, $userPassword)
         $id = getDb()->lastInsertId();
         // si tout ce passe bien on peut log l'utilisateur
         setSession($userName, $right, $id);
-    }catch (PDOException $e){
+    }catch (Exception $e){
         throw new Exception("Utilisateur déjà enregistré.");
     }
 }

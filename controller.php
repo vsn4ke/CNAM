@@ -13,15 +13,16 @@ function category($param, $page = 1){
     
     $_SESSION['current'] = generateURL('viewCat', $cat['slug']);
     $postList = getPostList($param, $page);
-
-    $posts = null;
-    for($i = 0; $i< count($postList); $i++){
-        if(isset($postList['data'][$i])){
-            $posts[$i] = getPost($postList['data'][$i]['id']);
-            $posts[$i]['categories'] = getCategories($postList['data'][$i]['id']);
+    $data = $postList['data'];
+    $detail = null;
+    for($i = 0; $i< count($data); $i++){
+        if(isset($data[$i])){
+            $detail[$i] = getPost($data[$i]['id']);
+            $detail[$i]['categories'] = getCategories($data[$i]['id']);
         }
     }
-    generate("Category", $cat['name'], array('category' => $cat, 'postList' => $postList, 'posts' => $posts));
+
+    generate("Category", $cat['name'], array('category' => $cat, 'postList' => $postList, 'detail' => $detail));
 }
 
 /**
@@ -41,6 +42,56 @@ function adminFunction($name, $params = array()){
         throw new Exception("Vous n'avez pas le droit d'utiliser les commandes d'admin.");
     }
     switch($name) {
+        // Reach Admin page
+        case 'managePost' :
+            generate('AdminPost', 'Administration - Gestion des posts', array('posts' => getPosts(), 'categories' => getCategories()));
+            break;
+
+        case 'manageUser' :
+            generate('AdminUser', 'Administration - Gestion des utilisateurs', array());
+            break;
+
+        case 'manageCategory' :
+            generate('AdminCategory', 'Administration - Gestion des catégories', array('categories' => getCategories()));
+            break;
+
+        case 'manageDatabase' :
+            generate('AdminDatabase', 'Administration - Gestion de la base de donnée', array());
+            break;
+
+        // Category (ajax query)
+        case 'editCategory' :
+            if (editCategory($params[0], $params[1]))
+                echo 'ok';
+            break;
+
+        case 'addCategory' :
+            if (addCategory($params[0]))
+                echo 'ok';
+            break;
+
+        case 'deleteCategory' :
+            if (deleteCategory($params[0]))
+                echo 'ok';
+            break;
+
+        // Post (ajax query)
+        case 'editPost' :
+            if (editPost($params[0], $params[1], $params[2], $params[3]))
+                echo 'ok';
+            break;
+
+        case 'addPost' :
+            if (addPost($params[0], $params[1], $params[2], $params[3]))
+                echo 'ok';
+            break;
+
+        case 'deletePost' :
+            if (deletePost($params[0]))
+                echo 'ok';
+            break;
+
+        // Comment
         case 'deleteComment' :
             deleteComment($params[0]);
             $_SESSION['flash_class'] = 'success';
@@ -55,34 +106,13 @@ function adminFunction($name, $params = array()){
             post($params[1]);
             break;
 
-        case 'managePost' :
-            $categories = getCategories();
-            generate('PostAdmin', 'Administration - Gestion des posts', array('categories' => $categories));
-            break;
 
-        case 'manageUser' :
-            break;
-
+        // Database
         case 'backup' :
             backupTables($params);
             $_SESSION['flash_class'] = 'success';
             $_SESSION['flash'] = 'Backup réalisé avec succès';
             index();
-            break;
-
-        case 'editCategory' :
-            if (editCategory($params[0], $params[1]))
-                echo 'ok';
-            break;
-
-        case 'addCategory' :
-            if (addCategory($params[0]))
-                echo 'ok';
-            break;
-
-        case 'deleteCategory' :
-            if (deleteCategory($params[0]))
-                echo 'ok';
             break;
 
         default:

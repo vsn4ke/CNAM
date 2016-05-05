@@ -9,8 +9,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width">
-    <link rel="shortcut icon" type="image/x-icon" href="<?= generateURL('View/img/favicon.ico') ?>">
-    <link rel="shortcut icon" type="image/png" href="<?= generateURL('View/img/favicon.png') ?>">
+    <link rel="shortcut icon" type="image/x-icon" href="<?= generateViewURL('favicon.ico', 'img') ?>">
+    <link rel="shortcut icon" type="image/png" href="<?= generateViewURL('favicon.png', 'img') ?>">
     <link rel="stylesheet" href="<?= generateURL('View/Style/default.css') ?>" />
 </head>
 <body>
@@ -33,7 +33,7 @@
                 <?php if(isset($_SESSION['user_name'])):?>
                     <?php if(isAdmin()) : ?>
                         <ul>
-                            <li><a href="<?= generateURL('admin', 'post')?>">Administration</a></li>
+                            <li><a href="<?= generateURL('admin', 'category')?>">Administration</a></li>
                         </ul>
                     <?php endif;?>
                     <ul>
@@ -52,24 +52,27 @@
                 <?php endif; ?>
             </nav>
             <hr class="clear">
-            <?php if(isAdmin()):?>
-                <nav>
-                    <ul>
-                        <li>Gestion des posts</li>
-                    </ul>
-                    <ul>
-                        <li>Gestion des membres</li>
-                    </ul>
-                    <ul>
-                        <li>Sauvegarde base de données</li>
-                    </ul>
-                </nav>
-            <?php endif; ?>
         </header>
         <section class="grid col-three-quarters mq2-col-two-thirds mq3-col-full">
             <?= $content ?>
         </section>
         <aside class="grid col-one-quarter mq2-col-one-third mq3-col-full blog-sidebar">
+            <?php if(isAdmin()):?>
+            <div class="widget">
+                <ul>
+                    <li><a href="<?= generateURL('admin', 'category')?>">Gestion des catégories</a></li>
+                </ul>
+                <ul>
+                    <li><a href="<?= generateURL('admin', 'post')?>">Gestion des posts</a></li>
+                </ul>
+                <ul>
+                    <li><a href="<?= generateURL('admin', 'user')?>">Gestion des membres</a></li>
+                </ul>
+                <ul>
+                    <li><a href="<?= generateURL('admin', 'database')?>">Sauvegarde base de données</a></li>
+                </ul>
+            </div>
+            <?php endif; ?>
             <div class="widget">
                 <p>TODO : Ajouter un texte de présentation</p>
             </div>

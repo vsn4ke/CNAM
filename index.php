@@ -66,6 +66,12 @@ try{
                 case 'user':
                     adminFunction('manageUser');
                     break;
+                case 'category' :
+                    adminFunction('manageCategory');
+                    break;
+                case 'database' :
+                    adminFunction('manageDatabase');
+                    break;
                 case 'backup':
                     adminFunction('backup', array('*'));
                     break;
@@ -85,6 +91,23 @@ try{
                 case 'addCategory' :
                     $content = getParams($_POST, 'content');
                     adminFunction('addCategory', array($content));
+                    break;
+                case 'deletePost' :
+                    adminFunction('deletePost', array($param[1]));
+                    break;
+                case 'addPost' :
+                    $name = getParams($_POST, 'name');
+                    $content = getParams($_POST, 'content');
+                    $categories = getParams($_POST, 'categories');
+                    $userId = $_SESSION['id'];
+                    adminFunction('addPost', array($name, $content, $userId, $categories));
+                    break;
+                case 'editPost' :
+                    $id = $param[1];
+                    $name = getParams($_POST, 'name');
+                    $content = getParams($_POST, 'content');
+                    $userId = $_SESSION['id'];
+                    adminFunction('editPost', array($id, $name, $content, $userId));
                     break;
             }
             break;
