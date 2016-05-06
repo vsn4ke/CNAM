@@ -113,7 +113,7 @@ function paginator($sql, $page, $perPage, $param = array())
  */
 function backupTables($tables = array())
 {
-    if($tables[0] == null || $tables[0] == '*'){
+    if($tables == null || $tables[0] == '*'){
         $tables = null;
         $t = executeRequest('SHOW TABLES')->fetchAll();
         for($i = 0; $i < count($t); $i++){
@@ -125,7 +125,7 @@ function backupTables($tables = array())
     foreach($tables AS $table){
         $result = executeRequest('SELECT * FROM ' . $table);
         $num_fields = $result->columnCount();
-        $return .= 'DROP TABLE ' . $table . ';' ;
+        $return .= 'DROP TABLE IF EXISTS ' . $table . ';' ;
 
         $row = executeRequest('SHOW CREATE TABLE '. $table)->fetch();
         $return .= "\n\n" . $row[1] . ";\n\n";
@@ -498,6 +498,55 @@ function editPost($id, $name, $content, $userID){
 /*
  * -- User
  */
+
+function purgeUser(){
+    backupTables();
+    $sql = 'SELECT User_ID FROM tUser WHERE User_Right = 0';
+    $query = executeRequest($sql);
+    if($query->rowCount() > 0){
+        $userList = $query->fetchAll();
+        $sql = '';
+        foreach($userList as $user){
+            $sql .= 'DELETE FROM tUser WHERE User_ID = '. $user['User_ID'] .';
+                 DELETE FROM tPost WHERE User_ID = '. $user['User_ID'] .';
+                 DELETE FROM tComment WHERE User_ID = '. $user['User_ID'] .';';}
+        executeRequest($sql);
+        return true;
+    }else
+        return false;
+
+}
+
+function getUserList(){
+    $sql = 'SELECT  User_ID AS id,
+                    User_Name AS name,
+                    User_Right AS uRight
+            FROM tUser
+            ORDER BY User_Right DESC';
+
+    return executeRequest($sql)->fetchAll();
+}
+
+
+/**
+ * @param $id
+ * @return bool
+ */
+function deleteUser($id){
+    backupTables(array('tUser'));
+
+    $sql = 'DELETE FROM tUser WHERE User_ID = ?;
+            INSERT INTO tUser (User_Id, User_Name, User_Hash, User_Right) VALUES(?, ?, "0", "0")';
+
+    $newName = "User $id Deleted";
+    try{
+        executeRequest($sql, array($id, $id, $newName));
+        return true;
+    }catch (Exception $e){
+        return false;
+    }
+}
+
 
 /**
  * Add a new user in the database. If succeed, the new user is logged in.

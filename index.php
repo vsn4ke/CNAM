@@ -75,6 +75,12 @@ try{
                 case 'backup':
                     adminFunction('backup', array('*'));
                     break;
+                case 'purgeUser':
+                    if(isset($_POST['CSRFToken']) && $_POST['CSRFToken']  == $_SESSION['CSRF'])
+                        adminFunction('purgeUser');
+                    else
+                        throw new Exception("Vous n'avez pas le droit d'éditer les commentaires.");
+                    break;
                 default:
                     throw new Exception("Paramètre invalide");
             }
@@ -109,8 +115,15 @@ try{
                     $userId = $_SESSION['id'];
                     adminFunction('editPost', array($id, $name, $content, $userId));
                     break;
+                case 'deleteUser' :
+                    adminFunction('deleteUser', array($param[1]));
+                    break;
             }
             break;
+        case 'contact' :
+            generate('Contact', 'Contact');
+            break;
+
         default:
             index();
     }

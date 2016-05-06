@@ -103,7 +103,7 @@
             <div class="up grid col-one-third "> <a href="#navtop" title="Go back up">&uarr;</a> </div>
             <nav class="grid col-one-third ">
                 <ul>
-                    <li><a href="#">TODO : Ajouter les liens rapides</a></li>
+                    <li><a href="<?=generateURL('contact')?>">Contact</a></li>
                 </ul>
             </nav>
         </footer>

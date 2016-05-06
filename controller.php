@@ -48,7 +48,7 @@ function adminFunction($name, $params = array()){
             break;
 
         case 'manageUser' :
-            generate('AdminUser', 'Administration - Gestion des utilisateurs', array());
+            generate('AdminUser', 'Administration - Gestion des utilisateurs', array('userList' => getUserList()));
             break;
 
         case 'manageCategory' :
@@ -89,6 +89,20 @@ function adminFunction($name, $params = array()){
         case 'deletePost' :
             if (deletePost($params[0]))
                 echo 'ok';
+            break;
+        // User
+
+        case 'deleteUser' :
+            if (deleteUser($params[0]))
+                echo 'ok';
+            break;
+
+        case 'purgeUser' :
+            if(purgeUser()){
+                $_SESSION['flash_class'] = 'success';
+                $_SESSION['flash'] = 'Base de donnée purgée avec succés.';
+            }
+            adminFunction('manageUser');
             break;
 
         // Comment
