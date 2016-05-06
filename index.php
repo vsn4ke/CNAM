@@ -1,4 +1,6 @@
 <?php
+define('BASE_PATH', realpath(dirname(__FILE__)));
+
 require_once('controller.php');
 require_once('model.php');
 
@@ -92,7 +94,7 @@ try{
                     break;
                 case 'editCategory' :
                     $content = getParams($_POST, 'content');
-                    adminFunction('edtitCategory', array($param[1], $content));
+                    adminFunction('editCategory', array($param[1], $content));
                     break;
                 case 'addCategory' :
                     $content = getParams($_POST, 'content');

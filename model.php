@@ -13,7 +13,8 @@ function getDb()
 {
     global $db;
     if($db == null){
-        $db = new PDO('mysql:host=localhost;dbname=project_CNAM;charset=utf8', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        //$db = new PDO('mysql:host=localhost;dbname=project_CNAM;charset=utf8', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        $db = new PDO('mysql:host=mysql.hostinger.fr;dbname=u388987691_cnam;charset=utf8', 'u388987691_root', 'BAbGd5FI892sm', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
     }
     return $db;
 }
@@ -689,7 +690,8 @@ function sanitize($value)
  */
 function generateURL($action, $param = null)
 {
-    $url =   '/CNAM/' . sanitize($action);
+    $url = sanitize($action);
+    //$url =   '/CNAM/' . sanitize($action);
     if(!is_null($param)){
         $url .=  '/' . sanitize($param);
     }
@@ -705,7 +707,8 @@ function generateURL($action, $param = null)
  */
 function generateViewURL($action, $param = null)
 {
-    $url = '/CNAM/View/';
+    //$url = '/CNAM/View/';
+    $url = '/View/';
     if(!is_null($param)){
         $url .= $param . '/';
     }
