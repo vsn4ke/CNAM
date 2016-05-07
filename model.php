@@ -11,10 +11,9 @@
  */
 function getDb()
 {
-    global $db;
+    global $db, $config;
     if($db == null){
-        //$db = new PDO('mysql:host=localhost;dbname=project_CNAM;charset=utf8', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-        $db = new PDO('mysql:host=mysql.hostinger.fr;dbname=u388987691_cnam;charset=utf8', 'u388987691_root', 'BAbGd5FI892sm', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        $db = new PDO('mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'] . ';charset=utf8', $config['db']['user'], $config['db']['password'], array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
     }
     return $db;
 }
@@ -563,7 +562,6 @@ function register($userName, $userPassword)
         $right = 1;
         executeRequest($sql, array($userName, $newPassword, $right));
         $id = getDb()->lastInsertId();
-        // si tout ce passe bien on peut log l'utilisateur
         setSession($userName, $right, $id);
     }catch (Exception $e){
         throw new Exception("Utilisateur déjà enregistré.");
@@ -633,7 +631,7 @@ function setSession($userName, $right, $id){
  */
 function generate($action, $title = '', $data = array())
 {
-    $file = 'View/' . $action . 'View.php';
+    $file = 'View/' . ucfirst($action) . 'View.php';
     $content = generateFile($file, $data);
     $flash = getFlashMessage();
     $catList = getCategories();
@@ -690,8 +688,9 @@ function sanitize($value)
  */
 function generateURL($action, $param = null)
 {
-    $url = sanitize($action);
-    //$url =   '/CNAM/' . sanitize($action);
+    global $config;
+
+    $url = $config['url'] . sanitize($action);
     if(!is_null($param)){
         $url .=  '/' . sanitize($param);
     }
@@ -707,8 +706,9 @@ function generateURL($action, $param = null)
  */
 function generateViewURL($action, $param = null)
 {
-    //$url = '/CNAM/View/';
-    $url = '/View/';
+    global $config;
+
+    $url = $config['url'] . 'View/';
     if(!is_null($param)){
         $url .= $param . '/';
     }
