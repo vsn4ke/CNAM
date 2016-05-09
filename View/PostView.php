@@ -12,7 +12,7 @@
             <a href="#comments" class="comments-link"><?= $post['Com_Number']?> commentaire(s)</a>.
         </p>
     </div>
-    <div class="entry" class="parser"><?= sanitize($post['content']) ?></div>
+    <div class="entry parser"><?= sanitize($post['content']) ?></div>
 </article>
 <section class="section-comment">
     <header>
@@ -65,7 +65,7 @@
 
 <script src="<?= generateURL('lib', 'bb-code-parser.js')?>"></script>
 <script>
-    var parser = new BBCodeParser();
+    var parser = new BBCodeParser({allowedCodes : ['b', 'i', 'u', 's', 'quote', 'code', 'url', 'img']});
     window.onload = function(){
         var toParse = document.getElementsByClassName('parser');
         for(i = toParse.length-1; i >= 0; i--){

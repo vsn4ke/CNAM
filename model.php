@@ -787,7 +787,13 @@ function getFlashMessage()
 function truncate($content, $length = 200)
 {
     if(strlen($content) > $length ){
-        $content = rtrim(mb_strimwidth($content, 0, $length))."...";
+        $content = rtrim(mb_strimwidth(stripBBCode($content), 0, $length))."...";
     }
     return sanitize($content);
+}
+
+function stripBBCode($content){
+    $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
+    $replace = '';
+    return preg_replace($pattern, $replace, $content);
 }
