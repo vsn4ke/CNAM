@@ -48,7 +48,7 @@ function adminFunction($name, $params = array()){
             break;
 
         case 'manageUser' :
-            generate('AdminUser', 'Administration - Gestion des utilisateurs', array('userList' => getUserList()));
+            generate('AdminUser', 'Administration - Gestion des utilisateurs', array('userList' => getUserList(), 'rights' => getRights()));
             break;
 
         case 'manageCategory' :
@@ -90,6 +90,12 @@ function adminFunction($name, $params = array()){
             if (deletePost($params[0]))
                 echo 'ok';
             break;
+
+        case 'changeRight':
+            if(changeRight($params[0], $params[1]))
+                echo 'ok';
+            break;
+
         // User
 
         case 'deleteUser' :

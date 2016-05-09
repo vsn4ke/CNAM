@@ -146,7 +146,7 @@ function backupTables($tables = array())
         $return .= "\n\n\n";
     }
 
-    $handle = fopen('SQL/db-backup-'.time().'-'.(md5(implode(',', $tables).time())).'.sql', 'w+');
+    $handle = fopen('./SQL/db-backup-'.time().'-'.(md5(implode(',', $tables).time())).'.sql', 'w+');
     fwrite($handle, $return);
     fclose($handle);
 }
@@ -385,6 +385,9 @@ function getPost($param)
     return executeRequest($sql, array($param, $param))->fetch();
 }
 
+/**
+ * @return array
+ */
 function getPosts()
 {
     $sql = 'SELECT
@@ -425,6 +428,7 @@ function popularPostList()
 }
 
 /**
+ * Add a post to the database (ajax query)
  * @param $name
  * @param $content
  * @param $userID
@@ -452,11 +456,13 @@ function addPost($name, $content, $userID, $categories){
         executeRequest($sql, $params);
         return true;
     }catch (Exception $e){
+        echo $e->getMessage();
         return false;
     }
 }
 
 /**
+ * Remove a post from the database using its id (ajax query)
  * @param $id
  * @return bool
  */
@@ -476,6 +482,7 @@ function deletePost($id){
 }
 
 /**
+ * Edit a post using its id. (ajax query)
  * @param $id
  * @param $name
  * @param $content
@@ -498,7 +505,43 @@ function editPost($id, $name, $content, $userID){
 /*
  * -- User
  */
+/**
+ * Change the user right using the user ID and the right name (ajax query)
+ * @param $userId
+ * @param $userRight
+ * @return bool
+ */
+function changeRight($userId, $userRight){
+    try{
+        $sql = 'SELECT Right_ID FROM tRight WHERE Right_Name = ?';
+        $id = executeRequest($sql, array($userRight))->fetch();
 
+        $sql = 'UPDATE tUser
+                SET User_Right = ?
+                WHERE User_Id = ?';
+
+        executeRequest($sql, array($id[0], $userId));
+        return true;
+    }catch (Exception $e){
+        return false;
+    }
+}
+
+/**
+ * Return a array of all rights ids and names
+ * @return array
+ */
+function getRights(){
+    $sql = 'SELECT r.Right_ID AS id, r.Right_Name AS name
+            FROM tRight AS r';
+
+    return executeRequest($sql)->fetchAll();
+}
+
+/**
+ * Clean the database from all deleted user and their posts/comments (ajax query)
+ * @return bool
+ */
 function purgeUser(){
     backupTables();
     $sql = 'SELECT User_ID FROM tUser WHERE User_Right = 0';
@@ -517,18 +560,23 @@ function purgeUser(){
 
 }
 
+/**
+ * Return an array with all users ids, names and rights
+ * @return array
+ */
 function getUserList(){
     $sql = 'SELECT  User_ID AS id,
                     User_Name AS name,
                     User_Right AS uRight
             FROM tUser
-            ORDER BY User_Right DESC';
+            ORDER BY User_Right DESC, User_Name ASC';
 
     return executeRequest($sql)->fetchAll();
 }
 
 
 /**
+ * Remove an user from the database using his id (ajax query)
  * @param $id
  * @return bool
  */

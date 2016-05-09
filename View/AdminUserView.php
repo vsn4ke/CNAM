@@ -5,6 +5,12 @@
             <span id="name-<?= $user['id']?>">
                 <?= $user['name']?>
             </span>
+            <select id="<?= $user['id']?>-right">
+                <?php foreach($rights as $right){
+                    $selected = ($user['uRight'] == $right['id']) ? 'selected' : '';
+                    echo '<option '. $selected .'>' . $right['name'] . '</option>';
+                }?>
+            </select>
             <small>
                 <a href="#" title="Delete" id="d-<?= $user['id'] . '-' . $user['name'] ?>">Delete</a>
             </small>
@@ -48,4 +54,29 @@
             })
         }
     }
+    var selects = document.getElementsByTagName('select');
+    for( i = 0; i < selects.length; i++){
+        selects[i].addEventListener('change', function(e){
+            e.preventDefault();
+            var userId = e.target.id.split('-')[0];
+            var userRight = e.target.value;
+            var ajax = new XMLHttpRequest();
+            ajax.open("POST", "<?= generateURL('ajax', 'changeRight')?>", true);
+            ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            ajax.send('userId=' + userId + '&userRight='+ userRight);
+            ajax.onreadystatechange = function(){
+                if(ajax.readyState == 4 && ajax.status == 200){
+                    console.log(ajax.responseText);
+                    if( ajax.responseText == "ok")
+                    {
+                        location.reload();
+
+                    }
+                }
+            };
+
+        })
+
+    }
+
 </script>

@@ -1,5 +1,4 @@
 <?php
-define('BASE_PATH', realpath(dirname(__FILE__)));
 
 require_once('config.php');
 require_once('controller.php');
@@ -121,6 +120,11 @@ try{
                 case 'deleteUser' :
                     adminFunction('deleteUser', array($param[1]));
                     break;
+                case 'changeRight' :
+                    $userId = getParams($_POST, 'userId');
+                    $userRight = getParams($_POST, 'userRight');
+                    adminFunction('changeRight', array($userId, $userRight));
+                    break;
             }
             break;
         case 'contact' :
@@ -139,6 +143,9 @@ try{
             break;
         case 'register':
             registerPage();
+            break;
+        case 'ajax':
+            echo $e->getMessage();
             break;
         default:
             index();

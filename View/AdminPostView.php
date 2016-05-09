@@ -86,6 +86,10 @@
                                 console.log(ajax.responseText);
                                 if (ajax.responseText == "ok") {
                                     location.reload();
+                                }else{
+                                    var flash = document.getElementById('flash');
+                                    flash.innerHTML = ajax.responseText;
+                                    flash.className = 'warning';
                                 }
                             }
                         };
@@ -106,9 +110,13 @@
                         if(ajax.readyState == 4 && ajax.status == 200){
                             if( ajax.responseText == "ok")
                             {
-                                var node = document.getElementById('delete-' + id);
-                                node.parentNode.removeChild(node);
+                                location.reload();
+                            }else{
+                                var flash = document.getElementById('flash');
+                                flash.innerHTML = ajax.responseText;
+                                flash.className = 'warning';
                             }
+
                         }
                     };
                 }
@@ -206,6 +214,10 @@
                         console.log(ajax.responseText);
                         if (ajax.responseText == "ok") {
                             location.reload();
+                        }else{
+                            var flash = document.getElementById('flash');
+                            flash.innerHTML = ajax.responseText;
+                            flash.className = 'warning';
                         }
                     }
                 };
