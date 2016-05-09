@@ -6,17 +6,3 @@
         <li><input type="submit"  id="submitForm" value="Login"></li>
     </ul>
 </form>
-<script type="application/javascript">
-    document.getElementById('submitForm').addEventListener("click", function(event){
-        event.preventDefault();
-        var usr = document.getElementById('usr').value;
-        var pwd = document.getElementById('pwd').value;
-
-        if(usr.length < 6 || pwd.length < 6 ){
-            document.getElementById('flash').innerHTML = "The username and the password are required and must be at least six characters long.";
-        }
-        else{
-            document.getElementById('loginForm').submit();
-        }
-    });
-</script>

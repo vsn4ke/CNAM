@@ -12,7 +12,7 @@
             <a href="#comments" class="comments-link"><?= $post['Com_Number']?> commentaire(s)</a>.
         </p>
     </div>
-    <div class="entry"><?= sanitize($post['content']) ?></div>
+    <div class="entry" class="parser"><?= sanitize($post['content']) ?></div>
 </article>
 <section class="section-comment">
     <header>
@@ -32,7 +32,8 @@
                    <li><a class="delete" id="deleteComment-<?=$comment['id']?>" href="<?= generateURL('deleteComment', $comment['id']. '-' . $post['slug'])?>">delete</a></li>
                </ul>
             <?php endif;?>
-            <p id="Comment-<?=$comment['id']?>"><?= sanitize($comment['content']) ?></p>
+            <p id="Comment-<?=$comment['id']?>" class="parser"><?= sanitize($comment['content']) ?></p>
+            <input type="hidden" id="<?=$comment['id']?>-hidden" value="<?= sanitize($comment['content']) ?>">
             <?php if(!is_null($comment['editname'])):?>
             <p class="edited">Edité par <?= sanitize($comment['editname'])?> le <?= $comment['editdate'] ?></p>
             <?php endif;?>
@@ -61,8 +62,19 @@
     </div>
 </section>
 <?= $comments['links'] ?>
-<?php if(isAdmin()):?>
+
+<script src="<?= generateURL('lib', 'bb-code-parser.js')?>"></script>
 <script>
+    var parser = new BBCodeParser();
+    window.onload = function(){
+        var toParse = document.getElementsByClassName('parser');
+        for(i = toParse.length-1; i >= 0; i--){
+
+            toParse[i].innerHTML = parser.format(toParse[i].innerHTML).replace(/&lt;br&gt;/gi, '<br>');
+        }
+    };
+
+<?php if(isAdmin()):?>
 
     // Delete Confirm
     var deleteLinks = document.getElementsByClassName("delete");
@@ -90,52 +102,52 @@
     var editLinks = document.getElementsByClassName("edit");
 
     for(i = 0; i < editLinks.length; i++){
-        editLinks[i].addEventListener('click', editComment)
+        editLinks[i].addEventListener('click', function(e){
+            var target = e.target || e.srcElement;
+            var id = target.id.split('-')[1];
+
+
+            var comment = document.getElementById('Comment-' + id);
+
+            var form = document.createElement('form');
+            form.method = "post";
+            form.action = "<?= generateURL('editComment')?>/" + id + "-<?= $post['slug']?>";
+
+            var ul = document.createElement('ul');
+            var li1 = document.createElement('li');
+            var li2 = document.createElement('li');
+
+
+            var textArea = document.createElement('textarea');
+            textArea.name = 'message';
+
+            var hiddenComment = document.getElementById(id+'-hidden');
+            var s = hiddenComment.value;
+            hiddenComment.parentNode.removeChild(hiddenComment);
+
+            textArea.innerHTML = s.replace(/<br>/gi, "").replace(/<br \/>/gi, "");
+
+
+            var submit = document.createElement('input');
+            submit.type = "submit";
+            submit.value = "Editer";
+            submit.className = "button";
+
+            var hidden = document.createElement('input');
+            hidden.type = "hidden";
+            hidden.name = "CSRFToken";
+            hidden.value = "<?= $_SESSION['CSRF'] ?>";
+
+            li1.appendChild(textArea);
+            li2.appendChild(submit);
+            ul.appendChild(li1);
+            ul.appendChild(li2);
+
+            form.appendChild(ul);
+            form.appendChild(hidden);
+
+            comment.parentNode.replaceChild(form, comment);
+        });
     }
-
-    function editComment(e){
-        var target = e.target || e.srcElement;
-        var id = target.id;
-
-        var commentId =  id.substr(4, id.length-1);
-        var comment = document.getElementById(commentId);
-
-        var form = document.createElement('form');
-        form.method = "post";
-        form.action = "<?= generateURL('editComment')?>/" + id.split("-")[1] + "-<?= $post['slug']?>";
-
-        var ul = document.createElement('ul');
-        var li1 = document.createElement('li');
-        var li2 = document.createElement('li');
-
-
-        var textArea = document.createElement('textarea');
-        textArea.name = 'message';
-
-        var s = comment.innerHTML;
-        textArea.innerHTML = s.replace(/<br>/gi, "");
-
-
-        var submit = document.createElement('input');
-        submit.type = "submit";
-        submit.value = "Editer";
-        submit.className = "button";
-
-        var hidden = document.createElement('input');
-        hidden.type = "hidden";
-        hidden.name = "CSRFToken";
-        hidden.value = "<?= $_SESSION['CSRF'] ?>";
-
-        li1.appendChild(textArea);
-        li2.appendChild(submit);
-        ul.appendChild(li1);
-        ul.appendChild(li2);
-
-        form.appendChild(ul);
-        form.appendChild(hidden);
-
-        comment.parentNode.replaceChild(form, comment);
-    }
-
-</script>
 <?php endif;?>
+</script>
