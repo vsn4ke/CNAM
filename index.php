@@ -16,9 +16,8 @@ try{
                 $userName = getParams($_POST, 'userName');
                 $userPassword = getParams($_POST, 'userPassword');
                 loginPage($userName,$userPassword);
-            }else{
+            }else
                 loginPage();
-            }
             break;
         case 'register':
             if(isset($_POST['submited'])){
@@ -26,9 +25,8 @@ try{
                 $userPassword = getParams($_POST, 'userPassword');
                 $userPasswordConfirmation = getParams($_POST, 'userPasswordConfirmation');
                 registerPage($userName, $userPassword, $userPasswordConfirmation);
-            }else{
+            }else
                 registerPage();
-            }
             break;
         case 'logout':
             logoutPage();
@@ -53,12 +51,10 @@ try{
             adminFunction('deleteComment', array($param[0], $param[1]));
             break;
         case 'editComment' :
-            if(isset($_POST['CSRFToken']) && $_POST['CSRFToken']  == $_SESSION['CSRF']) {
-                $content = getParams($_POST, 'message');
-                adminFunction('editComment', array($param[0], $param[1], $content));
-            }else{
+            if(isset($_POST['CSRFToken']) && $_POST['CSRFToken']  == $_SESSION['CSRF'])
+                adminFunction('editComment', array($param[0], $param[1], getParams($_POST, 'message')));
+            else
                 throw new Exception("Vous n'avez pas le droit d'éditer les commentaires.");
-            }
             break;
         case 'admin' :
             switch($param[0]){
