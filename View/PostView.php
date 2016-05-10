@@ -78,10 +78,19 @@
     </div>
 </section>
 <?= $comments['links'] ?>
-<script src="<?= generateURL('js', 'bb-code-parser.js')?>"></script>
+<script src="<?= generateScriptURL('bb-code-parser')?>"></script>
 <script>
-    var modal = document.getElementById('myModal');
+    var parser = new BBCodeParser({allowedCodes : ['b', 'i', 'u', 's', 'quote', 'code', 'url', 'img']});
+    window.onload = function(){
+        var toParse = document.getElementsByClassName('parser');
+        for(var i = toParse.length-1; i >= 0; i--){
 
+            toParse[i].innerHTML = parser.format(toParse[i].innerHTML).replace(/&lt;br&gt;/gi, '<br>');
+        }
+    };
+
+<?php if(isset($_SESSION['user_name'])):?>
+    var modal = document.getElementById('myModal');
     document.getElementById("myBtn").onclick = function() {
         modal.style.display = "block";
     };
@@ -95,15 +104,7 @@
             modal.style.display = "none";
         }
     };
-
-    var parser = new BBCodeParser({allowedCodes : ['b', 'i', 'u', 's', 'quote', 'code', 'url', 'img']});
-    window.onload = function(){
-        var toParse = document.getElementsByClassName('parser');
-        for(var i = toParse.length-1; i >= 0; i--){
-
-            toParse[i].innerHTML = parser.format(toParse[i].innerHTML).replace(/&lt;br&gt;/gi, '<br>');
-        }
-    };
+<?php endif;?>
 <?php if(isAdmin()):?>
     // Delete Confirm
     var deleteLinks = document.getElementsByClassName("delete");

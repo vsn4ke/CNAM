@@ -764,6 +764,11 @@ function generateViewURL($action, $param = null)
     return $url;
 }
 
+function generateScriptURL($action){
+    global $config;
+
+    return $config['url'] . 'js/' . $action . '.js';
+}
 /**
  * Get the flash session, empty it and return an array to use on the next page
  * @return array
