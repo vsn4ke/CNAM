@@ -273,11 +273,11 @@
             'FontSizeMax'              : 48,              // Set to null to allow any font-size
             'ColorAllowAdvFormats'     : false,           // Whether the rgb[a], hsl[a] color formats should be accepted
             'QuoteTitleBackground'     : '#e4eaf2',
-            'QuoteBorder'              : '1px solid gray',
+            'QuoteBorder'              : 'none',
             'QuoteBackground'          : 'white',
             'QuoteCSSClassName'        : 'quotebox-{by}', // {by} is the quote parameter ex: [quote=Waldo], {by} = Waldo
             'CodeTitleBackground'      : '#ffc29c',
-            'CodeBorder'               : '1px solid gray',
+            'CodeBorder'               : 'none',
             'CodeBackground'           : 'white',
             'CodeCSSClassName'         : 'codebox-{lang}', // {lang} is the code parameter ex: [code=PHP], {lang} = php
             'LinkUnderline'            : true,
@@ -1031,12 +1031,10 @@
         this.open = function(settings, argument, closingCode) {
             if(closingCode === undefined) closingCode = null;
             if(closingCode === null) {
-                var box  = '<div ';
-                if(argument) box += 'class="' + PHPC.htmlspecialchars(settings.QuoteCSSClassName.replace('{by}', argument)) + '"';
-                box += 'style="display: block; margin-bottom: .5em; border: ' + PHPC.htmlspecialchars(settings.QuoteBorder) + '; background-color: ' + PHPC.htmlspecialchars(settings.QuoteBackground) + '">';
+                var box  = '<blockquote>';
                 box += '<div style="display: block; width: 100%; text-indent: .25em; border-bottom: ' + PHPC.htmlspecialchars(settings.QuoteBorder) + '; background-color: ' + PHPC.htmlspecialchars(settings.QuoteTitleBackground) + '">';
                 box += 'QUOTE';
-                if(argument) box += ' by ' + PHPC.htmlspecialchars(argument);
+                if(argument) box += ' par ' + PHPC.htmlspecialchars(argument);
                 box += '</div>';
                 box += '<div style="overflow-x: auto; padding: .25em">';
                 return box;
@@ -1044,7 +1042,7 @@
         }
         this.close = function(settings, argument, closingCode) {
             if(closingCode === undefined) closingCode = null;
-            return (closingCode === null)? '</div></div>' : '';
+            return (closingCode === null)? '</div></blockquote>' : '';
         }
     }
     HTMLQuoteBBCode.prototype = new BBCode;
@@ -1128,8 +1126,7 @@
         this.isValidParent = function(settings, parent) { return parent !== this.getDisplayName(); }
         this.escape = function(settings, content) { return PHPC.htmlspecialchars(content); }
         this.open = function(settings, argument, closingCode) {
-            var decoration = (!BBCodeParser.isValidKey(settings, 'LinkUnderline') || settings.LinkUnderline)? 'underline' : 'none';
-            return '<a style="text-decoration: ' + decoration + '; color: ' + PHPC.htmlspecialchars(settings.LinkColor) + '" href="' + PHPC.htmlspecialchars(argument) + '">';
+            return '<a href="' + PHPC.htmlspecialchars(argument) + '">';
         }
         this.close = function(settings, argument, closingCode) {
             return '</a>';

@@ -43,10 +43,26 @@
     <div class="leavecomment" id="leavecomment">
         <h3>Laisser un commentaire</h3>
         <?php if(isset($_SESSION['user_name'])):?>
+        <button id="myBtn">Explication BBCode</button>
+        <div id="myModal" class="modal">
+            <span class="close">x</span>
+            <div class="modal-content">
+                <h3>Explication BBCode</h3>
+                <p>Pour décorer un peu votre texte, vous avez la possibilité d'ajouter des balises BBCode à celui-ci.</p>
+                <p>[b]Mon texte[/b] donnera <b>Mon texte</b></p>
+                <p>[i]Mon texte[/i] donnera <i>Mon texte</i></p>
+                <p>[u]Mon texte[/u] donnera <ins>Mon texte</ins></p>
+                <p>[s]Mon texte[/s] donnera <del>Mon texte</del></p>
+                <p>[url=mon_chemin.html]Mon texte[/url] donnera <a href="mon_chemin.html">Mon texte</a></p>
+                <p>[quote=Author]Mon texte[/quote] donnera </p><blockquote><h6>Par Author</h6><p>Mon texte</p></blockquote>
+                <p>[code]Mon texte[/code] donnera </p><pre>Mon texte</pre>
+                <p>[img]lien_vers_mon_image[/img] donnera <img src="lien_vers_mon_image"></p>
+            </div>
+        </div>
         <form action="<?= generateURL('comment')?>" method="post">
             <ul>
                 <li>
-                    <label for="message">Message:  TODO - Ajouter du BBCode</label>
+                    <label for="message">Commentaire :</label>
                     <textarea name="message" id="message" cols="100" rows="6" required  class="required"></textarea>
                 </li>
                 <li>
@@ -62,20 +78,33 @@
     </div>
 </section>
 <?= $comments['links'] ?>
-
-<script src="<?= generateURL('lib', 'bb-code-parser.js')?>"></script>
+<script src="<?= generateURL('js', 'bb-code-parser.js')?>"></script>
 <script>
+    var modal = document.getElementById('myModal');
+
+    document.getElementById("myBtn").onclick = function() {
+        modal.style.display = "block";
+    };
+
+    document.getElementsByClassName("close")[0].onclick = function() {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
     var parser = new BBCodeParser({allowedCodes : ['b', 'i', 'u', 's', 'quote', 'code', 'url', 'img']});
     window.onload = function(){
         var toParse = document.getElementsByClassName('parser');
-        for(i = toParse.length-1; i >= 0; i--){
+        for(var i = toParse.length-1; i >= 0; i--){
 
             toParse[i].innerHTML = parser.format(toParse[i].innerHTML).replace(/&lt;br&gt;/gi, '<br>');
         }
     };
-
 <?php if(isAdmin()):?>
-
     // Delete Confirm
     var deleteLinks = document.getElementsByClassName("delete");
 
