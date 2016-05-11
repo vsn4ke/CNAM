@@ -7,7 +7,7 @@
 <head>
     <title><?= $title ?></title>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width">
     <link rel="shortcut icon" type="image/x-icon" href="<?= generateViewURL('favicon.ico', 'img') ?>">
     <link rel="shortcut icon" type="image/png" href="<?= generateViewURL('favicon.png', 'img') ?>">
@@ -59,9 +59,9 @@
                 <div class="modal-content">
                     <h3>Connexion : </h3>
                     <form action="<?= generateURL('login') ?>" method="post" id="loginForm">
-                        <p><label for="usr">Nom d'utilisateur : </label><input id="usr" type="text" name="userName"></p>
-                        <p><label for="pwd">Mot de passe : </label><input id="pwd" type="password" name="userPassword"></p>
-                        <p><input type="submit"  id="submitForm" value="Connexion"></p>
+                        <p><label for="lusr">Nom d'utilisateur : </label><input id="lusr" type="text" name="userName"></p>
+                        <p><label for="lpwd">Mot de passe : </label><input id="lpwd" type="password" name="userPassword"></p>
+                        <p><input type="submit"  value="Connexion"></p>
                     </form>
                 </div>
             </div>
@@ -70,10 +70,10 @@
                 <div class="modal-content">
                     <h3>Enregistrement : </h3>
                     <form action="<?= generateURL('register') ?>" method="post" id="registerForm">
-                        <p><label for="usr">Nom d'utilisateur : </label><input id="usr" type="text" name="userName"></p>
-                        <p><label for="pwd">Mot de passe : </label><input id="pwd" type="password" name="userPassword"></p>
+                        <p><label for="rusr">Nom d'utilisateur : </label><input id="rusr" type="text" name="userName"></p>
+                        <p><label for="rpwd">Mot de passe : </label><input id="rpwd" type="password" name="userPassword"></p>
                         <p><label for="pwdConfirmation">Confirmation : </label><input id="pwdConfirmation" type="password" name="userPasswordConfirmation"></p>
-                        <p><input type="submit"  id="submitForm" value="Enregistrement"></p>
+                        <p><input type="submit"  value="Enregistrement"></p>
                     </form>
                 </div>
             </div>
