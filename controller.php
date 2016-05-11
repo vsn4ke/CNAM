@@ -205,10 +205,10 @@ function loginPage($userName, $userPassword){
  * @throws Exception
  */
 function registerPage($userName, $userPassword, $userPasswordConfirmation){
-    if(count($userName) < 6)
+    if(strlen($userName) < 6)
         throw new Exception("Nom d'utilisateur trop court. Un minimum de 6 caractères est demandé.");
 
-    if(count($userPassword) < 6)
+    if(strlen($userPassword) < 6)
         throw new Exception("Mot de passe trop court. Un minimum de 6 caractères est demandé.");
 
     if($userPassword != $userPasswordConfirmation)

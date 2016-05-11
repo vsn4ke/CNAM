@@ -1,10 +1,10 @@
 <h3>Gestion des Posts</h3>
 <ul>
     <?php foreach($posts as $post):?>
-        <li id="delete-<?= $post['id']?>"><span id="name-<?= $post['id']?>"><?= $post['name']?></span>
+        <li id="delete-<?= $post['id']?>"><span id="name-<?= $post['id']?>"><?= sanitize($post['name'])?></span>
             <small>
-                <a href="#" title="Edit" id="e-<?= $post['id'] . '-' . $post['name'] ?>">Editer</a>,
-                <a href="#" title="Delete" id="d-<?= $post['id'] . '-' . $post['name'] ?>">Supprimer</a>
+                <a href="#" title="Edit" id="e-<?= $post['id'] . '-' . sanitize($post['name']) ?>">Editer</a>,
+                <a href="#" title="Delete" id="d-<?= $post['id'] . '-' . sanitize($post['name']) ?>">Supprimer</a>
             </small>
             <input type="hidden" value="<?= $post['content'] ?>" id="content-<?= $post['id']?>">
         </li>

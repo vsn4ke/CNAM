@@ -3,7 +3,7 @@
     <?php foreach($userList as $user):?>
         <li id="delete-<?= $user['id']?>">
             <span id="name-<?= $user['id']?>">
-                <?= $user['name']?>
+                <?= sanitize($user['name'])?>
             </span>
             <select id="<?= $user['id']?>-right">
                 <?php foreach($rights as $right){
