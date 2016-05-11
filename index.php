@@ -12,21 +12,15 @@ try{
     switch(isset($_GET['action'])?$_GET['action']:''){
 
         case 'login':
-            if(isset($_POST['submited'])){
-                $userName = getParams($_POST, 'userName');
-                $userPassword = getParams($_POST, 'userPassword');
-                loginPage($userName,$userPassword);
-            }else
-                loginPage();
+            $userName = getParams($_POST, 'userName');
+            $userPassword = getParams($_POST, 'userPassword');
+            loginPage($userName,$userPassword);
             break;
         case 'register':
-            if(isset($_POST['submited'])){
-                $userName = getParams($_POST, 'userName');
-                $userPassword = getParams($_POST, 'userPassword');
-                $userPasswordConfirmation = getParams($_POST, 'userPasswordConfirmation');
-                registerPage($userName, $userPassword, $userPasswordConfirmation);
-            }else
-                registerPage();
+            $userName = getParams($_POST, 'userName');
+            $userPassword = getParams($_POST, 'userPassword');
+            $userPasswordConfirmation = getParams($_POST, 'userPasswordConfirmation');
+            registerPage($userName, $userPassword, $userPasswordConfirmation);
             break;
         case 'logout':
             logoutPage();
@@ -134,12 +128,6 @@ try{
     $_SESSION['flash_class'] = 'warning';
     $_SESSION['flash'] = $e->getMessage();
     switch(isset($_GET['action'])?$_GET['action']:''){
-        case 'login':
-            loginPage();
-            break;
-        case 'register':
-            registerPage();
-            break;
         case 'ajax':
             echo $e->getMessage();
             break;

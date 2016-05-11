@@ -73,7 +73,7 @@
             <input type="hidden" name="CSRFToken" value="<?= $_SESSION['CSRF'] ?>">
         </form>
         <?php else: ?>
-        <p><a href="<?= generateURL('login')?>">Pour commenter, vous devez être connecter.</a></p>
+        <p><a id="PostLoginModal" href="#">Pour commenter, vous devez être connecter.</a></p>
         <?php endif; ?>
     </div>
 </section>

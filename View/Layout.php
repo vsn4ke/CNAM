@@ -44,15 +44,40 @@
                     </ul>
                 <?php else: ?>
                     <ul>
-                        <li><a href="<?= generateURL('login')?>">Login</a></li>
+                        <li><a id="Login" href="#">Login</a></li>
                     </ul>
                     <ul>
-                        <li><a href="<?= generateURL('register')?>">Register</a></li>
+                        <li><a id="Register" href="#">Register</a></li>
                     </ul>
                 <?php endif; ?>
             </nav>
             <hr class="clear">
         </header>
+        <div id="modal">
+            <div id="LoginModal" class="modal">
+                <span id="closeLogin" class="close">x</span>
+                <div class="modal-content">
+                    <h3>Login : </h3>
+                    <form action="<?= generateURL('login') ?>" method="post" id="loginForm">
+                        <p><label for="usr">Username : </label><input id="usr" type="text" name="userName"></p>
+                        <p><label for="pwd">Password : </label><input id="pwd" type="password" name="userPassword"></p>
+                        <p><input type="submit"  id="submitForm" value="Login"></p>
+                    </form>
+                </div>
+            </div>
+            <div id="RegisterModal" class="modal">
+                <span id="closeRegister" class="close">x</span>
+                <div class="modal-content">
+                    <h3>Register : </h3>
+                    <form action="<?= generateURL('register') ?>" method="post" id="registerForm">
+                        <p><label for="usr">Username : </label><input id="usr" type="text" name="userName"></p>
+                        <p><label for="pwd">Password : </label><input id="pwd" type="password" name="userPassword"></p>
+                        <p><label for="pwdConfirmation">Confirm password : </label><input id="pwdConfirmation" type="password" name="userPasswordConfirmation"></p>
+                        <p><input type="submit"  id="submitForm" value="Register"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
         <section class="grid col-three-quarters mq2-col-two-thirds mq3-col-full">
             <?= $content ?>
         </section>
@@ -109,5 +134,49 @@
         </footer>
     </div>
 </div>
+<?php if(!isset($_SESSION['user_name'])):?>
+<script>
+    var loginModal = document.getElementById('LoginModal');
+    var registerModal = document.getElementById('RegisterModal');
+    var postLoginModal = document.getElementById('PostLoginModal');
+
+    if(postLoginModal !== null){
+        postLoginModal.onclick = function(e) {
+            e.preventDefault();
+            display(loginModal);
+        };
+    }
+
+    document.getElementById("Login").onclick = function(e) {
+        e.preventDefault();
+        display(loginModal);
+    };
+
+    document.getElementById("Register").onclick = function(e) {
+        e.preventDefault();
+        display(registerModal);
+    };
+
+    document.getElementById('closeLogin').onclick = close(loginModal);
+    document.getElementById('closeRegister').onclick = close(registerModal);
+
+    window.onclick = function(event) {
+        if (event.target == loginModal) {
+            close(loginModal);
+        } else if(event.target == registerModal){
+            close(registerModal)
+        }
+    };
+
+    function close(block){
+        block.style.display = "none";
+    }
+
+    function display(block){
+        block.style.display = "block";
+    }
+</script>
+<?php endif;?>
+
 </body>
 </html>

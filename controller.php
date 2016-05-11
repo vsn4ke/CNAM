@@ -177,16 +177,16 @@ function comment($userId, $content, $postId){
  * @param null $userPassword
  * @throws Exception
  */
-function loginPage($userName = null, $userPassword = null){
-
-    if(is_null($userName)){
-        generate('login', 'Enregistrement');
-    }else{
+function loginPage($userName, $userPassword){
+    try{
         login($userName, $userPassword);
-        $_SESSION['flash_class'] = 'success';
-        $_SESSION['flash'] = "Successfully Login";
-        index();
+    }catch (Exception $e){
+        throw new Exception($e->getMessage());
     }
+
+    $_SESSION['flash_class'] = 'success';
+    $_SESSION['flash'] = "Successfully Login";
+    index();
 }
 
 /**
@@ -196,18 +196,26 @@ function loginPage($userName = null, $userPassword = null){
  * @param null $userPasswordConfirmation
  * @throws Exception
  */
-function registerPage($userName = null, $userPassword = null, $userPasswordConfirmation = null){
-    if(is_null($userName)){
-        generate("Register", 'Inscription');
-    }else{
-        if($userPassword == $userPasswordConfirmation){
-            register($userName, $userPassword);
-            $_SESSION['flash_class'] = 'success';
-            $_SESSION['flash'] = "Successfully Register";
-            index();
-        }else
-            throw new Exception("The password and the confirmation don't match.");
+function registerPage($userName, $userPassword, $userPasswordConfirmation){
+    if(count($userName) < 6)
+        throw new Exception("Username too short. (At least 6 characters)");
+
+    if(count($userPassword) < 6)
+        throw new Exception("Password too short. (At least 6 characters)");
+
+    if($userPassword != $userPasswordConfirmation)
+        throw new Exception("The password and the confirmation don't match.");
+
+    try{
+        register($userName, $userPassword);
+    }catch (Exception $e){
+        throw new Exception($e->getMessage());
     }
+
+    $_SESSION['flash_class'] = 'success';
+    $_SESSION['flash'] = "Successfully Register";
+    index();
+
 }
 
 /**
