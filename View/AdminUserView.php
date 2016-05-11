@@ -47,6 +47,10 @@
                             {
                                 document.getElementById('name-'+id).innerHTML = "User " + id + " Deleted";
 
+                            }else if (ajax.responseText == "last_admin"){
+                                var flash = document.getElementById('flash');
+                                flash.className='warning';
+                                flash.innerHTML = 'Impossible de supprimer le dernier administrateur.';
                             }
                         }
                     };
@@ -71,6 +75,10 @@
                     {
                         location.reload();
 
+                    }else if (ajax.responseText == "last_admin"){
+                        var flash = document.getElementById('flash');
+                        flash.className='warning';
+                        flash.innerHTML = 'Impossible de modifier le dernier administrateur.';
                     }
                 }
             };

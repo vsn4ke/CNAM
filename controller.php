@@ -26,9 +26,12 @@ function category($param, $page = 1){
 }
 
 /**
- * Alias for category(1)
+ * Display the first available category.
  */
-function index(){category(1);}
+function index(){
+    $categories = getCategories();
+    category($categories[0]['id']);
+}
 
 /**
  * Manage all admin only function. A kind of router for admin's page
@@ -131,10 +134,15 @@ function adminFunction($name, $params = array()){
         case 'backup' :
             backupTables($params);
             $_SESSION['flash_class'] = 'success';
-            $_SESSION['flash'] = 'Backup réalisé avec succès';
+            $_SESSION['flash'] = 'Sauvegarde réalisée avec succès';
             index();
             break;
-
+        case 'reload' :
+            reloadDB();
+            $_SESSION['flash_class'] = 'success';
+            $_SESSION['flash'] = 'Réinitialisation réalisée avec succès';
+            index();
+            break;
         default:
             throw new Exception('Catégorie invalide.');
     }

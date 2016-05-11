@@ -151,10 +151,31 @@ function backupTables($tables = array())
     fclose($handle);
 }
 
+function reloadDB(){
+    try{
+        $sql = file_get_contents('./SQL/database.sql');
+        executeRequest($sql);
+    }catch (Exception $e){
+        throw new Exception("Erreur durant la réinitialisation");
+    }
+}
+
 /*
  *  -- Category
  */
 
+function isLastCategory(){
+    $sql = 'SELECT count(Cat_ID) AS nbrCat FROM tCategory';
+    $request = executeRequest($sql)->fetch();
+
+    if($request['nbrCat'] <= 1){
+        echo 'last_category';
+        return true;
+    }
+    else
+        return false;
+
+}
 /**
  * Get all data related to Categories
  * @param null $id : specify an Post_ID to get data related to categories for a specific Post_ID
@@ -220,16 +241,18 @@ function getCategoriesCount()
  */
 function deleteCategory($id)
 {
-    backupTables(array('tCategory', 'linkCatPost'));
+    if(!isLastCategory()){
+        backupTables(array('tCategory', 'linkCatPost'));
 
-    $sql = 'DELETE FROM tCategory WHERE Cat_ID = ?;
+        $sql = 'DELETE FROM tCategory WHERE Cat_ID = ?;
             DELETE FROM linkCatPost WHERE Cat_ID = ?';
 
-    try{
-        executeRequest($sql, array($id, $id));
-        return true;
-    }catch (Exception $e){
-        return false;
+        try{
+            executeRequest($sql, array($id, $id));
+            return true;
+        }catch (Exception $e){
+            return false;
+        }
     }
 }
 
@@ -512,18 +535,20 @@ function editPost($id, $name, $content, $userID){
  * @return bool
  */
 function changeRight($userId, $userRight){
-    try{
-        $sql = 'SELECT Right_ID FROM tRight WHERE Right_Name = ?';
-        $id = executeRequest($sql, array($userRight))->fetch();
+    if(!isLastAdmin($userId)){
+        try{
+            $sql = 'SELECT Right_ID FROM tRight WHERE Right_Name = ?';
+            $id = executeRequest($sql, array($userRight))->fetch();
 
-        $sql = 'UPDATE tUser
+            $sql = 'UPDATE tUser
                 SET User_Right = ?
                 WHERE User_Id = ?';
 
-        executeRequest($sql, array($id[0], $userId));
-        return true;
-    }catch (Exception $e){
-        return false;
+            executeRequest($sql, array($id[0], $userId));
+            return true;
+        }catch (Exception $e){
+            return false;
+        }
     }
 }
 
@@ -543,21 +568,23 @@ function getRights(){
  * @return bool
  */
 function purgeUser(){
-    backupTables();
     $sql = 'SELECT User_ID FROM tUser WHERE User_Right = 0';
     $query = executeRequest($sql);
     if($query->rowCount() > 0){
+        backupTables();
         $userList = $query->fetchAll();
         $sql = '';
         foreach($userList as $user){
             $sql .= 'DELETE FROM tUser WHERE User_ID = '. $user['User_ID'] .';
                  DELETE FROM tPost WHERE User_ID = '. $user['User_ID'] .';
-                 DELETE FROM tComment WHERE User_ID = '. $user['User_ID'] .';';}
+                 DELETE FROM tComment WHERE User_ID = '. $user['User_ID'] .';';
+        }
+        executeRequest($sql);
+        $sql = 'DELETE l FROM linkCatPost AS l LEFT JOIN tPost AS p ON p.Post_ID = l.Post_ID WHERE p.Post_ID IS NULL';
         executeRequest($sql);
         return true;
     }else
         return false;
-
 }
 
 /**
@@ -579,22 +606,43 @@ function getUserList(){
  * Remove an user from the database using his id (ajax query)
  * @param $id
  * @return bool
+ * @throws Exception
  */
 function deleteUser($id){
-    backupTables(array('tUser'));
-
-    $sql = 'DELETE FROM tUser WHERE User_ID = ?;
+    if(!isLastAdmin($id)){
+        backupTables(array('tUser'));
+        $sql = 'DELETE FROM tUser WHERE User_ID = ?;
             INSERT INTO tUser (User_Id, User_Name, User_Hash, User_Right) VALUES(?, ?, "0", "0")';
 
-    $newName = "Utilisateur $id supprimé";
-    try{
-        executeRequest($sql, array($id, $id, $newName));
-        return true;
-    }catch (Exception $e){
-        return false;
+        $newName = "Utilisateur $id supprimé";
+        try{
+            executeRequest($sql, array($id, $id, $newName));
+            return true;
+        }catch (Exception $e){
+            return false;
+        }
     }
+
 }
 
+function isLastAdmin($id){
+    $sql = 'SELECT count(User_ID) AS nbrAdmin, User_ID FROM tUser WHERE User_Right = 50 GROUP BY User_ID';
+    $request = executeRequest($sql)->fetchAll();
+
+    $isAdmin = false;
+    foreach($request as $item){
+        if($item['User_ID'] == $id){
+            $isAdmin = true;
+        }
+    }
+
+    if($request[0]['nbrAdmin'] <= 1 && $isAdmin){
+        echo 'last_admin';
+        return true;
+    }
+    else
+        return false;
+}
 
 /**
  * Add a new user in the database. If succeed, the new user is logged in.

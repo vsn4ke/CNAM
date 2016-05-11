@@ -73,6 +73,9 @@ try{
                     else
                         throw new Exception("Vous n'avez pas le droit d'éditer les commentaires.");
                     break;
+                case 'reload':
+                    adminFunction('reload');
+                    break;
                 default:
                     throw new Exception("Paramètre invalide");
             }

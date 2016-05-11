@@ -3,13 +3,13 @@
     <?php foreach($categories as $category):?>
         <li id="delete-<?= $category['id']?>"><span id="name-<?= $category['id']?>"><?= $category['name']?></span>
             <small>
-                <a href="#" title="Edit" id="e-<?= $category['id'] . '-' . $category['name'] ?>">Edit</a>,
-                <a href="#" title="Delete" id="d-<?= $category['id'] . '-' . $category['name'] ?>">Delete</a>
+                <a href="#" title="Edit" id="e-<?= $category['id'] . '-' . $category['name'] ?>">Editer</a>,
+                <a href="#" title="Delete" id="d-<?= $category['id'] . '-' . $category['name'] ?>">Supprimer</a>
             </small>
         </li>
     <?php endforeach; ?>
     <div id="newCat"></div>
-    <li id="idAddCat"><a href="#" id="addCat">+ Add category</a></li>
+    <li id="idAddCat"><a href="#" id="addCat">+ Ajouter une catégorie</a></li>
 </ul>
 <script>
 
@@ -29,9 +29,8 @@
                 var field = document.getElementById('field');
                 if(field == null) {
                     var a = document.createElement('a');
-                    a.title = 'Cancel';
                     a.id = 'cancel';
-                    a.innerHTML = 'Cancel';
+                    a.innerHTML = 'Annuler';
                     old.parentNode.replaceChild(a, old);
 
                     var cancel = document.getElementById('cancel');
@@ -83,13 +82,19 @@
                     ajax.open("GET", "<?= generateURL('ajax', 'deleteCategory-')?>" + id, true);
                     ajax.send();
                     ajax.onreadystatechange = function(){
+
                         if(ajax.readyState == 4 && ajax.status == 200){
+                            console.log(ajax.responseText);
                             if( ajax.responseText == "ok")
                             {
                                 var node = document.getElementById('delete-' + id);
 
                                 node.parentNode.removeChild(node);
 
+                            }else if (ajax.responseText == "last_category"){
+                                var flash = document.getElementById('flash');
+                                flash.className='warning';
+                                flash.innerHTML = 'Impossible de supprimer la dernière categorie.';
                             }
                         }
                     };
@@ -112,9 +117,8 @@
             li.appendChild(input);
 
             var a = document.createElement('a');
-            a.title = 'Cancel';
             a.id = 'cancel';
-            a.innerHTML = 'Cancel';
+            a.innerHTML = 'Annuler';
 
 
             var small = document.createElement('small');
