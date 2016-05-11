@@ -28,8 +28,8 @@
             <hr>
             <?php if(isAdmin()):?>
                <ul class="fright admin">
-                   <li><a class="edit" id="editComment-<?=$comment['id']?>" href="#Comment-<?=$comment['id']?>">edit</a></li>
-                   <li><a class="delete" id="deleteComment-<?=$comment['id']?>" href="<?= generateURL('deleteComment', $comment['id']. '-' . $post['slug'])?>">delete</a></li>
+                   <li><a class="edit" id="editComment-<?=$comment['id']?>" href="#Comment-<?=$comment['id']?>">Editer</a></li>
+                   <li><a class="delete" id="deleteComment-<?=$comment['id']?>" href="<?= generateURL('deleteComment', $comment['id']. '-' . $post['slug'])?>">Supprimer</a></li>
                </ul>
             <?php endif;?>
             <p id="Comment-<?=$comment['id']?>" class="parser"><?= sanitize($comment['content']) ?></p>
@@ -130,53 +130,71 @@
 
     // Edit
     var editLinks = document.getElementsByClassName("edit");
-
-    for(i = 0; i < editLinks.length; i++){
-        editLinks[i].addEventListener('click', function(e){
+    for(i = 0; i < editLinks.length; i++) {
+        editLinks[i].onclick = function (e) {
             var target = e.target || e.srcElement;
-            var id = target.id.split('-')[1];
+            edit(target);
+        };
+    }
+
+    function edit(target) {
+        var id = target.id.split('-')[1];
+
+        var comment = document.getElementById('Comment-' + id);
+
+        var form = document.createElement('form');
+        form.method = "post";
+        form.action = "<?= generateURL('editComment')?>/" + id + "-<?= $post['slug']?>";
+
+        var ul = document.createElement('ul');
+        var li1 = document.createElement('li');
+        var li2 = document.createElement('li');
 
 
-            var comment = document.getElementById('Comment-' + id);
+        var textArea = document.createElement('textarea');
+        textArea.name = 'message';
 
-            var form = document.createElement('form');
-            form.method = "post";
-            form.action = "<?= generateURL('editComment')?>/" + id + "-<?= $post['slug']?>";
+        var hiddenComment = document.getElementById(id + '-hidden');
+        var s = hiddenComment.value;
 
-            var ul = document.createElement('ul');
-            var li1 = document.createElement('li');
-            var li2 = document.createElement('li');
+        textArea.innerHTML = s.replace(/<br>/gi, "").replace(/<br \/>/gi, "");
 
 
-            var textArea = document.createElement('textarea');
-            textArea.name = 'message';
+        var submit = document.createElement('input');
+        submit.type = "submit";
+        submit.value = "Editer";
+        submit.className = "button";
 
-            var hiddenComment = document.getElementById(id+'-hidden');
-            var s = hiddenComment.value;
-            hiddenComment.parentNode.removeChild(hiddenComment);
+        var hidden = document.createElement('input');
+        hidden.type = "hidden";
+        hidden.name = "CSRFToken";
+        hidden.value = "<?= $_SESSION['CSRF'] ?>";
 
-            textArea.innerHTML = s.replace(/<br>/gi, "").replace(/<br \/>/gi, "");
+        li1.appendChild(textArea);
+        li2.appendChild(submit);
+        ul.appendChild(li1);
+        ul.appendChild(li2);
 
+        form.appendChild(ul);
+        form.appendChild(hidden);
 
-            var submit = document.createElement('input');
-            submit.type = "submit";
-            submit.value = "Editer";
-            submit.className = "button";
+        comment.parentNode.replaceChild(form, comment);
 
-            var hidden = document.createElement('input');
-            hidden.type = "hidden";
-            hidden.name = "CSRFToken";
-            hidden.value = "<?= $_SESSION['CSRF'] ?>";
+        var a = document.createElement('a');
+        var link = document.getElementById('editComment-' + id);
+        a.id = 'cancel';
+        a.innerHTML = 'Annuler';
+        link.parentNode.replaceChild(a, link);
 
-            li1.appendChild(textArea);
-            li2.appendChild(submit);
-            ul.appendChild(li1);
-            ul.appendChild(li2);
-
-            form.appendChild(ul);
-            form.appendChild(hidden);
-
-            comment.parentNode.replaceChild(form, comment);
+        var cancel = document.getElementById('cancel');
+        cancel.addEventListener('click', function (e) {
+            e.preventDefault();
+            form.parentNode.replaceChild(comment, form);
+            a.parentNode.replaceChild(link, a);
+            link.onclick = function (e) {
+                var target = e.target || e.srcElement;
+                edit(target);
+            };
         });
     }
 <?php endif;?>

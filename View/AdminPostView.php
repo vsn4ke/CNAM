@@ -3,14 +3,14 @@
     <?php foreach($posts as $post):?>
         <li id="delete-<?= $post['id']?>"><span id="name-<?= $post['id']?>"><?= $post['name']?></span>
             <small>
-                <a href="#" title="Edit" id="e-<?= $post['id'] . '-' . $post['name'] ?>">Edit</a>,
-                <a href="#" title="Delete" id="d-<?= $post['id'] . '-' . $post['name'] ?>">Delete</a>
+                <a href="#" title="Edit" id="e-<?= $post['id'] . '-' . $post['name'] ?>">Editer</a>,
+                <a href="#" title="Delete" id="d-<?= $post['id'] . '-' . $post['name'] ?>">Supprimer</a>
             </small>
             <input type="hidden" value="<?= $post['content'] ?>" id="content-<?= $post['id']?>">
         </li>
     <?php endforeach; ?>
     <div id="newPost"></div>
-    <li id="idAddPost"><a href="#" id="addPost">+ Add Post</a></li>
+    <li id="idAddPost"><a href="#" id="addPost">+ Ajouter un article</a></li>
 </ul>
 <script>
     var a = document.getElementsByTagName('a');
@@ -29,9 +29,8 @@
                 var field = document.getElementById('field');
                 if(field == null) {
                     var a = document.createElement('a');
-                    a.title = 'Cancel';
                     a.id = 'cancel';
-                    a.innerHTML = 'Cancel';
+                    a.innerHTML = 'Annuler';
                     old.parentNode.replaceChild(a, old);
 
                     var cancel = document.getElementById('cancel');
@@ -187,9 +186,8 @@
 
             li.appendChild(form);
 
-            a.title = 'Cancel';
             a.id = 'cancel';
-            a.innerHTML = 'Cancel';
+            a.innerHTML = 'Annuler';
 
             small.appendChild(a);
             li.appendChild(small);

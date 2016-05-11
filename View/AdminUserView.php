@@ -12,7 +12,7 @@
                 }?>
             </select>
             <small>
-                <a href="#" title="Delete" id="d-<?= $user['id'] . '-' . $user['name'] ?>">Delete</a>
+                <a href="#" title="Delete" id="d-<?= $user['id'] . '-' . $user['name'] ?>">Supprimer</a>
             </small>
         </li>
     <?php endforeach; ?>

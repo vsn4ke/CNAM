@@ -40,14 +40,14 @@
                         <li><?= sanitize($_SESSION['user_name'])?></li>
                     </ul>
                     <ul>
-                        <li><a href="<?= generateURL('logout')?>">Logout</a></li>
+                        <li><a href="<?= generateURL('logout')?>">Déconnexion</a></li>
                     </ul>
                 <?php else: ?>
                     <ul>
-                        <li><a id="Login" href="#">Login</a></li>
+                        <li><a id="Login" href="#">Connexion</a></li>
                     </ul>
                     <ul>
-                        <li><a id="Register" href="#">Register</a></li>
+                        <li><a id="Register" href="#">Enregistrement</a></li>
                     </ul>
                 <?php endif; ?>
             </nav>
@@ -57,23 +57,23 @@
             <div id="LoginModal" class="modal">
                 <span id="closeLogin" class="close">x</span>
                 <div class="modal-content">
-                    <h3>Login : </h3>
+                    <h3>Connexion : </h3>
                     <form action="<?= generateURL('login') ?>" method="post" id="loginForm">
-                        <p><label for="usr">Username : </label><input id="usr" type="text" name="userName"></p>
-                        <p><label for="pwd">Password : </label><input id="pwd" type="password" name="userPassword"></p>
-                        <p><input type="submit"  id="submitForm" value="Login"></p>
+                        <p><label for="usr">Nom d'utilisateur : </label><input id="usr" type="text" name="userName"></p>
+                        <p><label for="pwd">Mot de passe : </label><input id="pwd" type="password" name="userPassword"></p>
+                        <p><input type="submit"  id="submitForm" value="Connexion"></p>
                     </form>
                 </div>
             </div>
             <div id="RegisterModal" class="modal">
                 <span id="closeRegister" class="close">x</span>
                 <div class="modal-content">
-                    <h3>Register : </h3>
+                    <h3>Enregistrement : </h3>
                     <form action="<?= generateURL('register') ?>" method="post" id="registerForm">
-                        <p><label for="usr">Username : </label><input id="usr" type="text" name="userName"></p>
-                        <p><label for="pwd">Password : </label><input id="pwd" type="password" name="userPassword"></p>
-                        <p><label for="pwdConfirmation">Confirm password : </label><input id="pwdConfirmation" type="password" name="userPasswordConfirmation"></p>
-                        <p><input type="submit"  id="submitForm" value="Register"></p>
+                        <p><label for="usr">Nom d'utilisateur : </label><input id="usr" type="text" name="userName"></p>
+                        <p><label for="pwd">Mot de passe : </label><input id="pwd" type="password" name="userPassword"></p>
+                        <p><label for="pwdConfirmation">Confirmation : </label><input id="pwdConfirmation" type="password" name="userPasswordConfirmation"></p>
+                        <p><input type="submit"  id="submitForm" value="Enregistrement"></p>
                     </form>
                 </div>
             </div>
@@ -102,7 +102,7 @@
                 <p>TODO : Ajouter un texte de présentation</p>
             </div>
             <div class="widget">
-                <h2>Popular Posts</h2>
+                <h2>Articles populaires</h2>
                 <ul>
                     <?php foreach($popularPostList as $popularPost){
                         echo '<li><a href="'.generateURL('post', $popularPost['slug']).'">'. sanitize($popularPost['name']).'</a></li>';

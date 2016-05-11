@@ -586,7 +586,7 @@ function deleteUser($id){
     $sql = 'DELETE FROM tUser WHERE User_ID = ?;
             INSERT INTO tUser (User_Id, User_Name, User_Hash, User_Right) VALUES(?, ?, "0", "0")';
 
-    $newName = "User $id Deleted";
+    $newName = "Utilisateur $id supprimé";
     try{
         executeRequest($sql, array($id, $id, $newName));
         return true;
@@ -713,7 +713,7 @@ function generateFile($file, $data)
         require $file;
         return ob_get_clean();
     }else{
-        throw new Exception("File '$file' not found.");
+        throw new Exception("Fichier '$file' non trouvé.");
     }
 
 }

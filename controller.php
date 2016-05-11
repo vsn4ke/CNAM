@@ -149,7 +149,7 @@ function adminFunction($name, $params = array()){
 function post($param, $page = 1){
     $post = getPost($param);
     if($post['name'] == '')
-        throw new Exception('Post non valide');
+        throw new Exception('Article non valide');
 
     $post['categories'] = getCategories($post['id']);
     
@@ -185,7 +185,7 @@ function loginPage($userName, $userPassword){
     }
 
     $_SESSION['flash_class'] = 'success';
-    $_SESSION['flash'] = "Successfully Login";
+    $_SESSION['flash'] = "Connexion réalisé avec succès.";
     index();
 }
 
@@ -198,13 +198,13 @@ function loginPage($userName, $userPassword){
  */
 function registerPage($userName, $userPassword, $userPasswordConfirmation){
     if(count($userName) < 6)
-        throw new Exception("Username too short. (At least 6 characters)");
+        throw new Exception("Nom d'utilisateur trop court. Un minimum de 6 caractères est demandé.");
 
     if(count($userPassword) < 6)
-        throw new Exception("Password too short. (At least 6 characters)");
+        throw new Exception("Mot de passe trop court. Un minimum de 6 caractères est demandé.");
 
     if($userPassword != $userPasswordConfirmation)
-        throw new Exception("The password and the confirmation don't match.");
+        throw new Exception("Le mot de passe et la confirmation ne sont pas identique.");
 
     try{
         register($userName, $userPassword);
@@ -213,7 +213,7 @@ function registerPage($userName, $userPassword, $userPasswordConfirmation){
     }
 
     $_SESSION['flash_class'] = 'success';
-    $_SESSION['flash'] = "Successfully Register";
+    $_SESSION['flash'] = "Enregistrement réussi. Vous êtes désormais connecté.";
     index();
 
 }
@@ -224,7 +224,7 @@ function registerPage($userName, $userPassword, $userPasswordConfirmation){
 function logoutPage(){
     logout();
     $_SESSION['flash_class'] = 'success';
-    $_SESSION['flash'] = "Successfully Logout";
+    $_SESSION['flash'] = "Déconnexion réussie.";
     index();
 }
 
