@@ -165,10 +165,10 @@ function reloadDB(){
  */
 
 function isLastCategory(){
-    $sql = 'SELECT count(Cat_ID) AS nbrCat FROM tCategory';
-    $request = executeRequest($sql)->fetch();
+    $sql = 'SELECT Cat_ID FROM tCategory';
+    $nbrCat = executeRequest($sql)->rowCount();
 
-    if($request['nbrCat'] <= 1){
+    if($nbrCat <= 1){
         echo 'last_category';
         return true;
     }
@@ -460,8 +460,9 @@ function popularPostList()
  */
 function addPost($name, $content, $userID, $categories){
 
-
-    try{
+    $sql = 'SELECT Post_ID FROM tPost WHERE Post_Slug = ?';
+    $slug = slugify($name);
+    if(executeRequest($sql, array($slug))->rowCount() == 0){
         $sql = 'INSERT INTO tPost
                 VALUES("", ?, ?, NOW(), ?, ?, "", "");';  // id, name, content, date, slug, user_ID, User_ID_Edit, Post_Date_Edit
 
@@ -478,8 +479,8 @@ function addPost($name, $content, $userID, $categories){
 
         executeRequest($sql, $params);
         return true;
-    }catch (Exception $e){
-        echo $e->getMessage();
+    }else{
+        echo 'Le titre de l\'article est trop proche d\'un autre existant.';
         return false;
     }
 }
@@ -626,7 +627,8 @@ function deleteUser($id){
 }
 
 function isLastAdmin($id){
-    $sql = 'SELECT count(User_ID) AS nbrAdmin, User_ID FROM tUser WHERE User_Right = 50 GROUP BY User_ID';
+    $sql = 'SELECT User_ID FROM tUser WHERE User_Right = 50';
+    $nbrAdmin = executeRequest($sql)->rowCount();
     $request = executeRequest($sql)->fetchAll();
 
     $isAdmin = false;
@@ -636,7 +638,7 @@ function isLastAdmin($id){
         }
     }
 
-    if($request[0]['nbrAdmin'] <= 1 && $isAdmin){
+    if($nbrAdmin <= 1 && $isAdmin){
         echo 'last_admin';
         return true;
     }
