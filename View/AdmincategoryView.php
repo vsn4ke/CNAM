@@ -1,10 +1,10 @@
 <h3>Catégorie(s) : </h3>
 <ul>
     <?php foreach($categories as $category):?>
-        <li id="delete-<?= $category['id']?>"><span id="name-<?= $category['id']?>"><?= $category['name']?></span>
+        <li id="delete-<?= $category['id']?>"><span id="name-<?= $category['id']?>"><?= sanitize($category['name'])?></span>
             <small>
-                <a href="#" title="Edit" id="e-<?= $category['id'] . '-' . $category['name'] ?>">Editer</a>,
-                <a href="#" title="Delete" id="d-<?= $category['id'] . '-' . $category['name'] ?>">Supprimer</a>
+                <a href="#" title="Edit" id="e-<?= $category['id'] . '-' . sanitize($category['name']) ?>">Editer</a>,
+                <a href="#" title="Delete" id="d-<?= $category['id'] . '-' . sanitize($category['name']) ?>">Supprimer</a>
             </small>
         </li>
     <?php endforeach; ?>

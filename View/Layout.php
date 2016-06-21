@@ -99,7 +99,8 @@
             </div>
             <?php endif; ?>
             <div class="widget">
-                <p>TODO : Ajouter un texte de présentation</p>
+                <h2>Présentation</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas molestie velit sit amet sapien feugiat, id facilisis velit scelerisque. Pellentesque placerat neque non dolor placerat vestibulum. Praesent vitae libero ut tortor iaculis scelerisque vitae non nunc. Proin blandit nibh id tempor iaculis. Fusce vulputate blandit nunc a suscipit.</p>
             </div>
             <div class="widget">
                 <h2>Articles populaires</h2>
@@ -123,7 +124,9 @@
     <div class="divide-top">
         <footer class="grid-wrap">
             <ul class="grid col-one-third social">
-                <li><a href="#">TODO : Ajouter les liens réseaux sociaux</a></li>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">Reddit</a></li>
             </ul>
             <div class="up grid col-one-third "> <a href="#navtop" title="Go back up">&uarr;</a> </div>
             <nav class="grid col-one-third ">

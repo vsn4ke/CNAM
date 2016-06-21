@@ -56,7 +56,7 @@
                 <p>[url=mon_chemin.html]Mon texte[/url] donnera <a href="mon_chemin.html">Mon texte</a></p>
                 <p>[quote=Author]Mon texte[/quote] donnera </p><blockquote><h6>Par Author</h6><p>Mon texte</p></blockquote>
                 <p>[code]Mon texte[/code] donnera </p><pre>Mon texte</pre>
-                <p>[img]lien_vers_mon_image[/img] donnera <img src="lien_vers_mon_image"></p>
+                <p>[img]http://odevillers.esy.es/View/img/logo.png[/img] donnera <img src="http://odevillers.esy.es/View/img/logo.png"></p>
             </div>
         </div>
         <form action="<?= generateURL('comment')?>" method="post">
